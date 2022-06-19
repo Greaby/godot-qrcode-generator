@@ -22,11 +22,13 @@ The class returns an ImageTexture that you can add in an Image
 
 ```gdscript
 var qr_code: QrCode = QrCode.new()
-var texture: ImageTexture = qr_code.get_texture("add your text here")
+var texture: ImageTexture = qr_code.get_texture("Godot") # Add your text here
 
 var qr_code_image := $Path/To/QrCodeImage
 qr_code_image.texture = texture
 ```
+
+![Godot QR code](icon.png)
 
 ## Dependencies
 
