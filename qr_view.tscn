@@ -2,7 +2,7 @@
 
 [ext_resource path="res://qr_view.gd" type="Script" id=1]
 
-[sub_resource type="StreamTexture" id=1]
+[sub_resource type="CompressedTexture2D" id=1]
 load_path = "res://.import/icon.png-487276ed1e3a0c39cad0279d744ee560.stex"
 
 [node name="QRView" type="Control"]
@@ -18,31 +18,31 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
-margin_left = 200.0
-margin_top = 156.0
-margin_right = 400.0
-margin_bottom = 444.0
+offset_left = 200.0
+offset_top = 156.0
+offset_right = 400.0
+offset_bottom = 444.0
 custom_constants/separation = 30
 
 [node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
-margin_right = 200.0
-margin_bottom = 14.0
+offset_right = 200.0
+offset_bottom = 14.0
 text = "Qrcode"
 align = 1
 
 [node name="QrCode" type="TextureRect" parent="CenterContainer/VBoxContainer"]
-margin_top = 44.0
-margin_right = 200.0
-margin_bottom = 244.0
-rect_min_size = Vector2( 200, 200 )
+offset_top = 44.0
+offset_right = 200.0
+offset_bottom = 244.0
+minimum_size = Vector2( 200, 200 )
 texture = SubResource( 1 )
 expand = true
 stretch_mode = 5
 
 [node name="Text" type="Label" parent="CenterContainer/VBoxContainer"]
-margin_top = 274.0
-margin_right = 200.0
-margin_bottom = 288.0
+offset_top = 274.0
+offset_right = 200.0
+offset_bottom = 288.0
 text = "Text"
 align = 1
 autowrap = true

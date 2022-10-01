@@ -1,14 +1,6 @@
-; Engine configuration file.
-; It's best edited using the editor UI and not directly,
-; since the parameters that go here are not all obvious.
-;
-; Format:
-;   [section] ; section goes between []
-;   param=value ; assign values to parameters
-
-config_version=4
-
-_global_script_classes=[ {
+; Project was converted by built-in tool to Godot 4.0
+config_version=5
+_global_script_classes=[{
 "base": "Node",
 "class": "QrCode",
 "language": "GDScript",
@@ -23,7 +15,7 @@ _global_script_classes=[ {
 "class": "Utils",
 "language": "GDScript",
 "path": "res://classes/utils.gd"
-} ]
+}]
 _global_script_class_icons={
 "QrCode": "",
 "ReedSolomonGenerator": "",
@@ -34,7 +26,7 @@ _global_script_class_icons={
 
 config/name="QR code generator"
 run/main_scene="res://main.tscn"
-boot_splash/bg_color=Color( 0.0352941, 0.0588235, 0.101961, 1 )
+boot_splash/bg_color=Color(0.0352941, 0.0588235, 0.101961, 1)
 config/icon="res://icon.png"
 
 [autoload]
@@ -53,5 +45,5 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
-environment/default_clear_color=Color( 0.0352941, 0.0588235, 0.101961, 1 )
+environment/default_clear_color=Color(0.0352941, 0.0588235, 0.101961, 1)
 environment/default_environment="res://default_env.tres"

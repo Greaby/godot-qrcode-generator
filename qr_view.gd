@@ -1,7 +1,7 @@
 extends Control
 
-onready var text_label := $CenterContainer/VBoxContainer/Text
-onready var qr_code_image := $CenterContainer/VBoxContainer/QrCode
+@onready var text_label := $CenterContainer/VBoxContainer/Text
+@onready var qr_code_image := $CenterContainer/VBoxContainer/QrCode
 
 
 func _ready() -> void:

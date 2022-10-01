@@ -186,7 +186,7 @@ func generate(input: String, mask_pattern: int) -> Array:
 
 
 func _set_encoding_type(value: String) -> void:
-	var byte_array = value.to_utf8()
+	var byte_array = value.to_utf8_buffer()
 
 	var is_numeric = true
 	for byte in byte_array:
@@ -259,7 +259,7 @@ func _encode_alphanumeric(value: String) -> void:
 
 func _encode_bytes(value: String) -> void:
 	qr_data_list = []
-	var byte_array = value.to_utf8()
+	var byte_array = value.to_utf8_buffer()
 	for byte in byte_array:
 		qr_data_list.append_array(Utils.convert_to_binary(byte))
 
@@ -313,7 +313,7 @@ func _set_info_segments() -> void:
 
 	while qr_data_list.size() / 8 < max_capacity:
 		qr_data_list.append_array(padding_bits[0])
-		padding_bits.invert()
+		padding_bits.reverse()
 
 
 func _set_error_correction() -> void:
@@ -339,20 +339,20 @@ func _set_error_correction() -> void:
 
 
 func _apply_mask_pattern(mask_pattern: int, positions: Array) -> void:
-	var invert: bool = false
+	var reverse: bool = false
 	
 	for position in positions:
 		match mask_pattern:
-			0:  invert = int(position.x + position.y) % 2 == 0
-			1:  invert = int(position.y) % 2 == 0
-			2:  invert = int(position.x) % 3 == 0
-			3:  invert = int(position.x + position.y) % 3 == 0
-			4:  invert = int(floor(position.x / 3) + floor(position.y / 2)) % 2 == 0
-			5:  invert = int(position.x * position.y) % 2 + int(position.x * position.y) % 3 == 0
-			6:  invert = (int(position.x * position.y) % 2 + int(position.x * position.y) % 3) % 2 == 0
-			7:  invert = (int(position.x + position.y) % 2 + int(position.x * position.y) % 3) % 2 == 0
+			0:  reverse = int(position.x + position.y) % 2 == 0
+			1:  reverse = int(position.y) % 2 == 0
+			2:  reverse = int(position.x) % 3 == 0
+			3:  reverse = int(position.x + position.y) % 3 == 0
+			4:  reverse = int(floor(position.x / 3) + floor(position.y / 2)) % 2 == 0
+			5:  reverse = int(position.x * position.y) % 2 + int(position.x * position.y) % 3 == 0
+			6:  reverse = (int(position.x * position.y) % 2 + int(position.x * position.y) % 3) % 2 == 0
+			7:  reverse = (int(position.x + position.y) % 2 + int(position.x * position.y) % 3) % 2 == 0
 
-		if invert:
+		if reverse:
 			modules[position.x][position.y] = !modules[position.x][position.y]
 
 
@@ -512,22 +512,22 @@ func _generate_texture_image(data: Array) -> ImageTexture:
 	var image: Image = Image.new()
 	
 	image.create(data.size() + 2, data.size() + 2, false, Image.FORMAT_RGB8)
-	image.fill(Color.white)
-	image.lock()
+	image.fill(Color.WHITE)
+	false # image.lock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	
 	for row in range(data.size()):
 		for col in range(data[row].size()):
-			var color = Color.black if data[row][col] else Color.white
+			var color = Color.BLACK if data[row][col] else Color.WHITE
 			
 			if data[row][col] == null:
-				color = Color.gray
+				color = Color.GRAY
 
 			image.set_pixel(row + 1, col + 1, color)
 
-	image.unlock()
+	false # image.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 
 	var texture: ImageTexture = ImageTexture.new()
-	texture.create_from_image(image, ImageTexture.FLAG_CONVERT_TO_LINEAR)
+	texture.create_from_image(image) #,ImageTexture.FLAG_CONVERT_TO_LINEAR
 
 	return texture
 

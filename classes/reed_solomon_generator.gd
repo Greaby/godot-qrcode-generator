@@ -5,7 +5,7 @@ class_name ReedSolomonGenerator
 var coefficients: Array = []
 
 
-func _init(degree: int) -> void:
+func _init(degree: int):
 	if degree < 1 || degree > 255:
 		push_error("Degree out of range")
 
