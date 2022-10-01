@@ -7,7 +7,7 @@ enum ENCODINGS {NUMERIC, ALPHANUMERIC, KANJI, BYTES}
 enum ERROR_CORRECT_LEVEL {
 	LOW = 0,
 	MEDIUM = 1, 
-	QUARTILE = 2
+	QUARTILE = 2,
 	HIGH = 3, 
 }
 
@@ -513,7 +513,6 @@ func _generate_texture_image(data: Array) -> ImageTexture:
 	
 	image.create(data.size() + 2, data.size() + 2, false, Image.FORMAT_RGB8)
 	image.fill(Color.WHITE)
-	false # image.lock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	
 	for row in range(data.size()):
 		for col in range(data[row].size()):
@@ -524,12 +523,9 @@ func _generate_texture_image(data: Array) -> ImageTexture:
 
 			image.set_pixel(row + 1, col + 1, color)
 
-	false # image.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 
 	var texture: ImageTexture = ImageTexture.new()
-	texture.create_from_image(image) #,ImageTexture.FLAG_CONVERT_TO_LINEAR
-
-	return texture
+	return texture.create_from_image(image) 
 
 
 func _get_data_zigzag_positions() -> Array:
