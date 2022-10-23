@@ -44,8 +44,8 @@ const MAX_CAPACTITY = {
 const LENGTH_INFO_BITS = {
 	ENCODINGS.NUMERIC : [10,12,14],
 	ENCODINGS.ALPHANUMERIC : [9,11,13],
-	ENCODINGS.KANJI : [8,16,16],
-	ENCODINGS.BYTES : [8,10,12],
+	ENCODINGS.KANJI : [8,10,12],
+	ENCODINGS.BYTES : [8,16,16],
 }
 
 const ENCODING_INFO_BITS = {
@@ -71,6 +71,25 @@ const ECC_CODEWORDS_PER_BLOCK: Dictionary = {
 	ERROR_CORRECT_LEVEL.HIGH: [
 		17,28,22,16,22,28,26,26,24,28,24,28,22,24,24,30,28,28,26,28,
 		30,24,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30
+	],
+}
+
+const NUM_ERROR_CORRECTION_BLOCKS: Dictionary = {
+	ERROR_CORRECT_LEVEL.LOW : [
+		1,1,1,1,1,2,2,2,2,4,4,4,4,4,6,6,6,6,7,8,8,9,9,10,
+		12,12,12,13,14,15,16,17,18,19,19,20,21,22,24,25
+	],
+	ERROR_CORRECT_LEVEL.MEDIUM: [
+		1,1,1,2,2,4,4,4,5,5,5,8,9,9,10,10,11,13,14,16,17,17,
+		18,20,21,23,25,26,28,29,31,33,35,37,38,40,43,45,47,49
+	],
+	ERROR_CORRECT_LEVEL.QUARTILE: [
+		1,1,2,2,4,4,6,6,8,8,8,10,12,16,12,17,16,18,21,20,23,23,
+		25,27,29,34,34,35,38,40,43,45,48,51,53,56,59,62,65,68
+	],
+	ERROR_CORRECT_LEVEL.HIGH: [
+		1,1,2,4,4,4,5,6,8,8,11,11,16,16,18,16,19,21,25,25,25,34,
+		30,32,35,37,40,42,45,48,51,54,57,60,63,66,70,74,77,81
 	],
 }
 
@@ -135,6 +154,7 @@ var module_count : int = 0
 var modules : Array = []
 
 var qr_data_list : Array = []
+var ecc_data_list : Array = []
 
 var qr_data_length : int = 0
 
@@ -148,6 +168,17 @@ func get_texture(input: String) -> ImageTexture:
 	var data: Array = get_data(input)
 	return _generate_texture_image(data)
 
+func get_num_raw_data_modules(ver: int) ->  int:
+		var result: int = (16 * ver + 128) * ver + 64
+		if ver >= 2:
+			var num_align: int = floor(ver / 7) + 2
+			result -= (25 * num_align - 10) * num_align - 55
+		
+		if ver >= 7:
+			result -= 36
+		
+		return result
+
 
 func generate(input: String, mask_pattern: int) -> Array:
 	_set_encoding_type(input)
@@ -158,8 +189,10 @@ func generate(input: String, mask_pattern: int) -> Array:
 	
 	_set_info_segments()
 	
-	_set_error_correction()
+	_split_data_into_blocks()
 	
+	_set_error_correction()
+
 	module_count = type_number * 4 + 17
 
 	modules = []
@@ -167,16 +200,17 @@ func generate(input: String, mask_pattern: int) -> Array:
 		modules.insert(row , [])
 		for col in range(module_count):
 			modules[row].insert(col, null)
-			
+
 	_set_position_detection_pattern(0, 0)
 	_set_position_detection_pattern(module_count - 7, 0)
 	_set_position_detection_pattern(0, module_count - 7)
 
+	_set_version_information()
 	_set_alignment_pattern()
 	_set_timing_pattern()
 
 	_setup_type_info(mask_pattern)
-	
+
 	var zig_zag_positions = _get_data_zigzag_positions()
 	_set_data(zig_zag_positions)
 
@@ -297,7 +331,7 @@ func _get_length_bits_size(version: int) -> int:
 func _set_info_segments() -> void:
 	var length_bits_size = _get_length_bits_size(type_number)
 	var length_bits = Utils.convert_to_binary(qr_data_length, length_bits_size)
-	
+
 	qr_data_list = ENCODING_INFO_BITS[encoding] + length_bits + qr_data_list + TERMINATOR_BITS
 
 	var max_capacity = MAX_CAPACTITY[error_correct_level][type_number - 1]
@@ -316,26 +350,54 @@ func _set_info_segments() -> void:
 		padding_bits.invert()
 
 
-func _set_error_correction() -> void:
-	var block_ecc_len: int = ECC_CODEWORDS_PER_BLOCK[error_correct_level][type_number - 1]
+func _split_data_into_blocks() -> void:
+	var num_blocks: int = NUM_ERROR_CORRECTION_BLOCKS[error_correct_level][type_number - 1]
 
-	var j = -1
-	var blocks = []
-	for index in qr_data_list.size():
-		if index % 8 == 0:
-			j += 1
-			blocks.append([])
-		blocks[j].append(qr_data_list[index])
+	var block_ecc_len: int = ECC_CODEWORDS_PER_BLOCK[error_correct_level][type_number - 1]
 	
+	var rawCodewords: int = floor(get_num_raw_data_modules(type_number) / 8)
+	var numShortBlocks: int = num_blocks - rawCodewords % num_blocks
+	var shortBlockLen: int = floor(rawCodewords / num_blocks)
+
+	var result: = []
+	var off = 0
+
+	for block_index in range(num_blocks):
+		var end: int = off + (shortBlockLen - block_ecc_len + int(block_index >= numShortBlocks)) * 8
+
+		var block: Array = qr_data_list.slice(off, end - 1);
+		
+		result.push_back(block);
+		off = end
+
+	qr_data_list = result
+
+func _set_error_correction() -> void:
+	ecc_data_list = []
+	var block_ecc_len: int = ECC_CODEWORDS_PER_BLOCK[error_correct_level][type_number - 1]
+	var short_block_data_len: int = qr_data_list[0].size()
+
 	var rs = ReedSolomonGenerator.new(block_ecc_len)
 
-	for index in blocks.size():
-		blocks[index] = Utils.convert_to_decimal(blocks[index])
-	
-	blocks = rs.get_remainder(blocks)
+	for block_index in range(qr_data_list.size()):
+		ecc_data_list.append([])
+		var j = -1
+		var block_bytes = []
+		for index in qr_data_list[block_index].size():
+			if index % 8 == 0:
+				j += 1
+				block_bytes.append([])
+			block_bytes[j].append(qr_data_list[block_index][index])
+		
+		
 
-	for block in blocks:
-		qr_data_list.append_array(Utils.convert_to_binary(block, 8))
+		for index in block_bytes.size():
+			block_bytes[index] = Utils.convert_to_decimal(block_bytes[index])
+		
+		block_bytes = rs.get_remainder(block_bytes)
+
+		for byte in block_bytes:
+			ecc_data_list[block_index].append_array(Utils.convert_to_binary(byte, 8))
 
 
 func _apply_mask_pattern(mask_pattern: int, positions: Array) -> void:
@@ -367,6 +429,7 @@ func _get_mask_pattern(input: String) -> int:
 		if index == 0 or min_lost_point > lost_point:
 			min_lost_point = lost_point
 			pattern = index
+	
 	return pattern
 
 
@@ -404,6 +467,27 @@ func _set_timing_pattern() -> void:
 
 		if modules[6][index] == null:
 			modules[6][index] = index % 2 == 0
+
+
+func _set_version_information() -> void:
+	if type_number < 7:
+		return
+	
+	var rem: int = type_number
+	
+	for i in range(12):
+		rem = (rem << 1) ^ ((rem >> 11) * 0x1F25)
+		
+	var bits: int = type_number << 12 | rem
+
+	for index in range(18):
+		var color: bool = ((bits >> index) & 1) != 0
+
+		var a: int = modules.size() - 11 + index % 3
+		var b: int = floor(index / 3)
+		modules[a][b] = color
+		modules[b][a] = color
+
 
 
 func _setup_type_info(mask_pattern) -> void:
@@ -555,7 +639,22 @@ func _get_data_zigzag_positions() -> Array:
 	return result
 
 
-func _set_data(zig_zag_positions) -> void:
-	for index in qr_data_list.size():
-		var position = zig_zag_positions[index]
-		modules[position.x][position.y] = qr_data_list[index]
+func _set_data(zig_zag_positions: Array) -> void:
+
+	var position_index = 0
+	for index in qr_data_list[qr_data_list.size() - 1].size() / 8:
+		for row in qr_data_list.size():
+			if qr_data_list[row].size() > index * 8:
+				for bits in range(8):
+					var position = zig_zag_positions[position_index]
+					modules[position.x][position.y] = qr_data_list[row][index * 8 + bits]
+					position_index += 1
+
+	for index in ecc_data_list[0].size() / 8:
+		for row in ecc_data_list.size():
+			if ecc_data_list[row].size() > index * 8:
+				for bits in range(8):
+					pass
+					var position = zig_zag_positions[position_index]
+					modules[position.x][position.y] = ecc_data_list[row][index * 8 + bits]
+					position_index += 1
