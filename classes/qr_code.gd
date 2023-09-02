@@ -670,3 +670,9 @@ func _set_data(zig_zag_positions: Array) -> void:
 					var position = zig_zag_positions[position_index]
 					modules[position.x][position.y] = ecc_data_list[row][index * 8 + bits]
 					position_index += 1
+	
+	# Add Remainder Bits if necessary.
+	while position_index < zig_zag_positions.size():
+		var position = zig_zag_positions[position_index]
+		modules[position.x][position.y] = false
+		position_index += 1
