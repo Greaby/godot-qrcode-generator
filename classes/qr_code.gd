@@ -558,25 +558,37 @@ func get_lost_point() -> int:
 
 	# LEVEL3
 	for row in range(module_count):
-		for col in range(module_count - 6):
-			if (modules[row][col]
-					and not modules[row][col + 1]
-					and     modules[row][col + 2]
-					and     modules[row][col + 3]
-					and     modules[row][col + 4]
-					and not modules[row][col + 5]
-					and     modules[row][col + 6] ):
+		for col in range(module_count - 10):
+			if (
+				modules[row][col]
+				and not modules[row][col + 1]
+				and     modules[row][col + 2]
+				and     modules[row][col + 3]
+				and     modules[row][col + 4]
+				and not modules[row][col + 5]
+				and     modules[row][col + 6]
+				and not modules[row][col + 7]
+				and not modules[row][col + 8]
+				and not modules[row][col + 9]
+				and not modules[row][col + 10]
+			):
 				lost_point += 40
 
 	for col in range(module_count):
-		for row in range(module_count - 6):
-			if (modules[row][col]
-					and not modules[row + 1][col]
-					and     modules[row + 2][col]
-					and     modules[row + 3][col]
-					and     modules[row + 4][col]
-					and not modules[row + 5][col]
-					and     modules[row + 6][col] ):
+		for row in range(module_count - 10):
+			if (
+				modules[row][col]
+				and not modules[row + 1][col]
+				and     modules[row + 2][col]
+				and     modules[row + 3][col]
+				and     modules[row + 4][col]
+				and not modules[row + 5][col]
+				and     modules[row + 6][col]
+				and not modules[row + 7][col]
+				and not modules[row + 8][col]
+				and not modules[row + 9][col]
+				and not modules[row + 10][col]
+			):
 				lost_point += 40
 
 	# LEVEL4
