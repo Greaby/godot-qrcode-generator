@@ -1,4 +1,4 @@
-# QR code generator - Godot Engine
+# QR code generator - Godot Engine 3.4+
 
 <p>
     <a href="https://github.com/Greaby/godot-qrcode-generator/issues">
@@ -18,13 +18,13 @@ This generator creates textures of a QR code from a string.
 ## How to use
 
 Create a new QR code instance and pass it your text.
-The class returns an ImageTexture that you can add in an Image
+The class returns an `ImageTexture` that you can add in an Image
 
 ```gdscript
 var qr_code: QrCode = QrCode.new()
 
 # choose the level of error correction (LOW, MEDIUM, QUARTILE, HIGH)
-qr_code.error_correct_level = QrCode.ERROR_CORRECT_LEVEL.LOW
+qr_code.error_correct_level = QrCode.ErrorCorrectionLevel.LOW
 
 var texture: ImageTexture = qr_code.get_texture("Godot") # Add your text here
 
@@ -36,8 +36,8 @@ qr_code_image.texture = texture
 
 ## Dependencies
 
-This project require Godot Engine 3.4.
+This project require Godot Engine 3.4+
 
 ## Licenses
 
--   The source code is available under the MIT license.
+- The source code is available under the MIT license.

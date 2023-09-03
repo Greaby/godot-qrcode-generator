@@ -4,10 +4,10 @@ onready var input_value := $CenterContainer/VBoxContainer/VBoxContainer/InputVal
 onready var error_correction_level := $CenterContainer/VBoxContainer/VBoxContainer2/ErrorCorrection
 
 func _ready() -> void:
-	error_correction_level.add_item("Low", QrCode.ERROR_CORRECT_LEVEL.LOW)
-	error_correction_level.add_item("Medium", QrCode.ERROR_CORRECT_LEVEL.MEDIUM)
-	error_correction_level.add_item("Quartile", QrCode.ERROR_CORRECT_LEVEL.QUARTILE)
-	error_correction_level.add_item("High", QrCode.ERROR_CORRECT_LEVEL.HIGH)
+	error_correction_level.add_item("Low", QrCode.ErrorCorrectionLevel.LOW)
+	error_correction_level.add_item("Medium", QrCode.ErrorCorrectionLevel.MEDIUM)
+	error_correction_level.add_item("Quartile", QrCode.ErrorCorrectionLevel.QUARTILE)
+	error_correction_level.add_item("High", QrCode.ErrorCorrectionLevel.HIGH)
 
 
 func _on_ValidateButton_pressed() -> void:

@@ -8,3 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - fix penalty rule 3
 - fix missing remainder Bits
+
+### Changed
+- update readme
+- code style cleanup
