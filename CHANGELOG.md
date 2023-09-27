@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.0.0] - 2023-09-03
 ### Fixed
 - fix penalty rule 3
 - fix missing remainder Bits
@@ -12,3 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - update readme
 - code style cleanup
+
+[Unreleased]: https://github.com/Greaby/godot-qrcode-generator/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Greaby/godot-qrcode-generator/releases/tag/v1.0.0
