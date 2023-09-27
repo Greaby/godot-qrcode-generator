@@ -220,7 +220,7 @@ func generate(input: String, mask_pattern: int) -> Array:
 
 
 func _set_encoding_type(value: String) -> void:
-	var byte_array = value.to_utf8()
+	var byte_array = value.to_utf8_buffer()
 
 	var is_numeric = true
 	for byte in byte_array:
@@ -293,7 +293,7 @@ func _encode_alphanumeric(value: String) -> void:
 
 func _encode_bytes(value: String) -> void:
 	qr_data_list = []
-	var byte_array = value.to_utf8()
+	var byte_array = value.to_utf8_buffer()
 	for byte in byte_array:
 		qr_data_list.append_array(Utils.convert_to_binary(byte))
 
@@ -343,11 +343,11 @@ func _set_info_segments() -> void:
 	while qr_data_list.size() % 8 != 0:
 		qr_data_list.append(false)
 
-	var padding_bits = PADDING_BITS
+	var padding_bits: Array = PADDING_BITS.duplicate(true)
 
 	while qr_data_list.size() / 8 < max_capacity:
 		qr_data_list.append_array(padding_bits[0])
-		padding_bits.invert()
+		padding_bits.reverse()
 
 
 func _split_data_into_blocks() -> void:
@@ -365,7 +365,7 @@ func _split_data_into_blocks() -> void:
 	for block_index in range(num_blocks):
 		var end: int = off + (short_block_len - block_ecc_len + int(block_index >= num_short_blocks)) * 8
 
-		var block: Array = qr_data_list.slice(off, end - 1);
+		var block: Array = qr_data_list.slice(off, end);
 
 		result.push_back(block);
 		off = end
@@ -388,8 +388,6 @@ func _set_error_correction() -> void:
 				j += 1
 				block_bytes.append([])
 			block_bytes[j].append(qr_data_list[block_index][index])
-
-
 
 		for index in block_bytes.size():
 			block_bytes[index] = Utils.convert_to_decimal(block_bytes[index])
@@ -500,7 +498,6 @@ func _setup_type_info(mask_pattern) -> void:
 		rem = (rem << 1) ^ ((rem >> 9) * 0x537)
 	bits = (data << 10 | rem) ^ 0x5412;
 
-
 	for i in range(6):
 		modules[8][i] = ((bits >> i) & 1) == 1
 
@@ -605,27 +602,20 @@ func get_lost_point() -> int:
 
 
 func _generate_texture_image(data: Array) -> ImageTexture:
-	var image: Image = Image.new()
-
-	image.create(data.size() + 2, data.size() + 2, false, Image.FORMAT_RGB8)
-	image.fill(Color.white)
-	image.lock()
+	var image: Image = Image.create(data.size() + 2, data.size() + 2, false, Image.FORMAT_RGBA8)
+	image.fill(Color.WHITE)
 
 	for row in range(data.size()):
 		for col in range(data[row].size()):
-			var color = Color.black if data[row][col] else Color.white
+			var color = Color.BLACK if data[row][col] else Color.WHITE
 
 			if data[row][col] == null:
-				color = Color.gray
+				color = Color.GRAY
 
 			image.set_pixel(row + 1, col + 1, color)
 
-	image.unlock()
-
 	var texture: ImageTexture = ImageTexture.new()
-	texture.create_from_image(image, ImageTexture.FLAG_CONVERT_TO_LINEAR)
-
-	return texture
+	return texture.create_from_image(image)
 
 
 func _get_data_zigzag_positions() -> Array:

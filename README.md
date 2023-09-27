@@ -1,4 +1,4 @@
-# QR code generator - Godot Engine 3.4+
+# QR code generator - Godot Engine 4.1+
 
 <p>
     <a href="https://github.com/Greaby/godot-qrcode-generator/issues">
@@ -36,7 +36,7 @@ qr_code_image.texture = texture
 
 ## Dependencies
 
-This project require Godot Engine 3.4+
+This project require Godot Engine 4.1+
 
 ## Licenses
 

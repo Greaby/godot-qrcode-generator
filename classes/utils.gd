@@ -1,6 +1,7 @@
 class_name Utils
 extends Node
 
+
 const ALPHANUMERIC_CHARACTERS: Dictionary = {
 	"0" : 0,
 	"1" : 1,

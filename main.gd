@@ -1,7 +1,7 @@
 extends Control
 
-onready var input_value := $CenterContainer/VBoxContainer/VBoxContainer/InputValue
-onready var error_correction_level := $CenterContainer/VBoxContainer/VBoxContainer2/ErrorCorrection
+@onready var input_value := $CenterContainer/VBoxContainer/VBoxContainer/InputValue
+@onready var error_correction_level := $CenterContainer/VBoxContainer/VBoxContainer2/ErrorCorrection
 
 func _ready() -> void:
 	error_correction_level.add_item("Low", QrCode.ErrorCorrectionLevel.LOW)
@@ -11,6 +11,7 @@ func _ready() -> void:
 
 
 func _on_ValidateButton_pressed() -> void:
-	Global.qr_text = input_value.text
-	Global.error_correction_level = error_correction_level.selected
-	get_tree().change_scene("res://qr_view.tscn")
+	if input_value.text != "":
+		Global.qr_text = input_value.text
+		Global.error_correction_level = error_correction_level.selected
+		get_tree().change_scene_to_file("res://qr_view.tscn")
