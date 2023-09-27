@@ -1,5 +1,5 @@
-extends Node
 class_name ReedSolomonGenerator
+extends Node
 
 
 var coefficients: Array = []
@@ -32,7 +32,7 @@ func get_remainder(data: Array) -> Array:
 	for byte in data:
 		var factor = byte ^ result.pop_front()
 		result.append(0);
-		
+
 		for index in coefficients.size():
 			result[index] ^= self._multiply(coefficients[index], factor)
 

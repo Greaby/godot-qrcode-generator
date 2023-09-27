@@ -6,35 +6,14 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
-
-_global_script_classes=[ {
-"base": "Node",
-"class": "QrCode",
-"language": "GDScript",
-"path": "res://classes/qr_code.gd"
-}, {
-"base": "Node",
-"class": "ReedSolomonGenerator",
-"language": "GDScript",
-"path": "res://classes/reed_solomon_generator.gd"
-}, {
-"base": "Node",
-"class": "Utils",
-"language": "GDScript",
-"path": "res://classes/utils.gd"
-} ]
-_global_script_class_icons={
-"QrCode": "",
-"ReedSolomonGenerator": "",
-"Utils": ""
-}
+config_version=5
 
 [application]
 
 config/name="QR code generator"
 run/main_scene="res://main.tscn"
-boot_splash/bg_color=Color( 0.0352941, 0.0588235, 0.101961, 1 )
+config/features=PackedStringArray("4.1")
+boot_splash/bg_color=Color(0.156863, 0.203922, 0.290196, 1)
 config/icon="res://icon.png"
 
 [autoload]
@@ -43,9 +22,11 @@ Global="*res://autoloads/global.gd"
 
 [display]
 
-window/size/width=600
+window/size/viewport_width=600
+window/size/viewport_height=600
+window/size/resizable=false
 window/stretch/mode="2d"
-window/stretch/aspect="keep"
+window/size/width=600
 
 [physics]
 
@@ -53,5 +34,6 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
-environment/default_clear_color=Color( 0.0352941, 0.0588235, 0.101961, 1 )
+environment/defaults/default_clear_color=Color(0.156863, 0.203922, 0.290196, 1)
+environment/default_clear_color=Color(0.0352941, 0.0588235, 0.101961, 1)
 environment/default_environment="res://default_env.tres"

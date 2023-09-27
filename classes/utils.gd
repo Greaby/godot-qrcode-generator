@@ -1,5 +1,6 @@
-extends Node
 class_name Utils
+extends Node
+
 
 const ALPHANUMERIC_CHARACTERS: Dictionary = {
 	"0" : 0,
@@ -53,7 +54,7 @@ static func convert_to_binary(data: int, size: int = 8) -> Array:
 	var result := []
 	for index in range(size - 1, -1, -1): # range size to 0
 		result.append(data >> index & 1 == 1)
-		
+
 	return result
 
 static func convert_to_decimal(binary_value: Array):
