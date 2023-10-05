@@ -9,6 +9,9 @@
     </a>
 </p>
 
+
+[Version for Godot Engine 4.1+](https://github.com/Greaby/godot-qrcode-generator/)
+
 QR code generator written in GDScript.
 
 A QR code is a type of two-dimensional barcode made up of black square modules arranged in a square with a white background. These dots define the information contained in the code.
