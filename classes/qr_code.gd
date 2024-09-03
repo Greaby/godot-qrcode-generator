@@ -397,6 +397,8 @@ func _set_error_correction() -> void:
 		for byte in block_bytes:
 			ecc_data_list[block_index].append_array(Utils.convert_to_binary(byte, 8))
 
+	rs.free()
+
 
 func _apply_mask_pattern(mask_pattern: int, positions: Array) -> void:
 	var invert: bool = false
