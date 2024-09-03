@@ -32,6 +32,8 @@ var texture: ImageTexture = qr_code.get_texture("Godot") # Add your text here
 
 var qr_code_image := $Path/To/QrCodeImage
 qr_code_image.texture = texture
+
+qr_code.queue_free() # clean up to avoid leaks
 ```
 
 ![Godot QR code](icon.png)
